@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
 
     s.name         = "FQ_MineScrollerVC"
 
-    s.version      = "0.0.1"
+    s.version      = "0.0.2"
 
     s.summary      = "快捷创建多标题以及多控制器协同侧滑的控制器"
 

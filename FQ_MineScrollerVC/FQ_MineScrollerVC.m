@@ -297,7 +297,6 @@
  */
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
-    NSLog(@"------->滑动结束调用");
     NSInteger selectIndex = scrollView.contentOffset.x / ScreenW;
     UIViewController*viewC = self.childViewControllers[selectIndex];
     if (_delegateFlags.enterChilderVc) {
