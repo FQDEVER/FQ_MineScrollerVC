@@ -57,7 +57,10 @@
     [self.view addSubview:self.titleView];
 }
 
-
+-(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
+{
+    [self changRedDotStatusWithArr:@[@0,@1,@0]];
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

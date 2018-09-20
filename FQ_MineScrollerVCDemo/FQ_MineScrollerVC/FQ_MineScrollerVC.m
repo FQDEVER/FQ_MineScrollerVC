@@ -315,6 +315,21 @@
     }
 }
 
+/**
+ 更新红点状态数组
+ 
+ @param redDotArr 红点状态数组
+ */
+-(void)changRedDotStatusWithArr:(NSArray *)redDotArr
+{
+    for (int i = 0; i <redDotArr.count ; ++i) {
+        NSNumber *redDotStatus = redDotArr[i];
+        FQ_MineScrollerBtn * btn = [self.titleView viewWithTag:(i + TitleBtnTag + 1)];
+        btn.isShowRedDot = redDotStatus.boolValue;
+    }
+}
+
+
 #pragma mark ============ Scroller代理 ==============
 
 -(void)mineScroller_scrollviewDidScroll:(UIScrollView *)scrollView{
