@@ -47,6 +47,11 @@ typedef enum : NSInteger{
 //标题数组
 @property (strong, nonatomic) NSArray<NSString *> *titlesArr;
 
+/**
+ 标题红点数组.默认均为@0.即不产生红点.如果有五组标题.值传入4组红点状态.最后一组默认为@0
+ */
+@property (nonatomic, strong) NSArray<NSNumber *> *titleRedDotArr;
+
 //子控制器数组
 @property (strong, nonatomic) NSArray<UIViewController *> *childVCArr;
 

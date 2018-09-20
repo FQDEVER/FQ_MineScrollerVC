@@ -35,6 +35,7 @@
     scrollerModel.childVCArr = @[dynamicVc,fansVc,focusVc];
     scrollerModel.lineType = BottomLineTypeScaling;
     scrollerModel.lineLength  = 15;
+    scrollerModel.titleRedDotArr = @[@1,@1,@1];
 
     scrollerModel.titleViewType = TitleViewStatusType_Full_Right;
     scrollerModel.selectColor = [UIColor redColor];
@@ -70,7 +71,7 @@
 
 -(void)mineScrollerVC:(FQ_MineScrollerVC *)scrollerVC firstEnterChilderVc:(UIViewController *)childerVc
 {
-    NSLog(@"-------->是第一次进入%@",childerVc);
+    NSLog(@"-------->是第一次进入%@==%zd",childerVc,self.scrollerModel.selectIndex);
 }
 
 -(void)mineScrollerVC:(FQ_MineScrollerVC *)scrollerVC noneFirstEnterChilderVc:(UIViewController *)childerVc

@@ -9,6 +9,65 @@
 #import "FQ_MineScrollerVC.h"
 #import "FQ_LineColorView.h"
 
+@interface FQ_MineScrollerBtn()
+
+@property (nonatomic, strong) CALayer *redView;
+
+@end
+
+@implementation FQ_MineScrollerBtn
+
+-(instancetype)initWithFrame:(CGRect)frame
+{
+    if (self = [super initWithFrame:frame]) {
+        [self creatRedDot];
+    }
+    return self;
+}
+
+-(instancetype)init{
+    if (self = [super init]) {
+        [self creatRedDot];
+    }
+    return self;
+}
+
+-(void)creatRedDot{
+    //新建小红点
+    self.redView = [[CALayer alloc]init];
+    self.redView.cornerRadius = 5;
+    self.redView.masksToBounds = YES;
+    self.redView.backgroundColor = [UIColor redColor].CGColor;
+    self.redView.frame = CGRectMake(0, 0, 8, 8);
+    [self.layer addSublayer:self.redView];
+    self.redView.hidden = YES;
+}
+
+-(void)layoutSubviews
+{
+    [super layoutSubviews];
+    
+    CGRect titleRect = self.titleLabel.frame;
+    
+    CGFloat titleRectH = titleRect.size.height;
+    
+    CGFloat titleRectY = titleRect.origin.y;
+    
+    CGFloat titleRectMaxX = CGRectGetMaxX(titleRect);
+    
+    self.redView.frame = CGRectMake(titleRectMaxX + 5, (titleRectH - 10) * 0.5 + titleRectY, 10, 10);
+    
+}
+
+-(void)setIsShowRedDot:(BOOL)isShowRedDot
+{
+    _isShowRedDot = isShowRedDot;
+    
+    self.redView.hidden = !isShowRedDot;
+}
+
+@end
+
 @interface FQ_MineScrollerVC ()<UIScrollViewDelegate>
 {
     struct {
@@ -121,13 +180,18 @@
         if (self.scrollerModel.titleViewType == TitleViewStatusType_Full_Left || self.scrollerModel.titleViewType == TitleViewStatusType_Full_Right || self.scrollerModel.titleViewType == TitleViewStatusType_Full_Center) {
             titleW = titleLength.floatValue + TitleMargin;
         }
+        BOOL isShowRed = NO;
+        if (self.scrollerModel.titleRedDotArr.count > i - 1) {
+            isShowRed = [self.scrollerModel.titleRedDotArr[i-1] boolValue];
+        }
         
-        UIButton * titleBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        FQ_MineScrollerBtn * titleBtn = [FQ_MineScrollerBtn buttonWithType:UIButtonTypeCustom];
         [titleBtn setTitle:titleArr[i - 1] forState:UIControlStateNormal];
         [titleBtn setTitleColor:self.scrollerModel.defaultColor forState:UIControlStateNormal];
         [titleBtn setTitleColor:self.scrollerModel.selectColor forState:UIControlStateSelected];
         titleBtn.tag = TitleBtnTag + i;
         titleBtn.selected = NO;
+        titleBtn.isShowRedDot = isShowRed;
         titleBtn.frame = CGRectMake(titleBtnX, 0, titleW, titleBtnH);
         titleBtn.titleLabel.font = [UIFont systemFontOfSize:TitleViewFontSize];
         [titleBtn addTarget:self action:@selector(clickTitleBtn:) forControlEvents:UIControlEventTouchUpInside];
@@ -199,6 +263,8 @@
             if ([_enterDataDict[self.scrollerModel.titlesArr[i - 1]] integerValue] == 0) {
                 if (_delegateFlags.firstEnterChilderVc) {
                     [_mineDelegate mineScrollerVC:self firstEnterChilderVc:Vc];
+                    FQ_MineScrollerBtn *btn = [self.titleView viewWithTag:(i + TitleBtnTag)];
+                    btn.isShowRedDot = NO;
                 }
                 [_enterDataDict setObject:@"1" forKey:self.scrollerModel.titlesArr[i - 1]];
             }else{
@@ -216,6 +282,37 @@
     self.separatorView= [[UIView alloc]initWithFrame:CGRectZero];
     self.separatorView.backgroundColor = RGB(220.0, 220.0, 220.0);
     [self.view addSubview:self.separatorView];    
+}
+
+#pragma mark ============ 关于标签处红点处理 ==========
+/**
+ 显示标题上对应索引数组的红点
+ 
+ @param indexArr 索引数组
+ */
+-(void)showRedDotWithIndexArr:(NSArray *)indexArr
+{
+    for (NSNumber *index in indexArr) {
+        if (self.scrollerModel.titlesArr.count > index.integerValue) {
+            FQ_MineScrollerBtn * btn = [self.titleView viewWithTag:(index.integerValue + TitleBtnTag + 1)];
+            btn.isShowRedDot = YES;
+        }
+    }
+}
+
+/**
+ 隐藏标题上对应索引数组的红点
+ 
+ @param indexArr 索引数组
+ */
+-(void)hiddenRedDotWithIndexArr:(NSArray *)indexArr
+{
+    for (NSNumber *index in indexArr) {
+        if (self.scrollerModel.titlesArr.count > index.integerValue) {
+            FQ_MineScrollerBtn * btn = [self.titleView viewWithTag:(index.integerValue + TitleBtnTag + 1)];
+            btn.isShowRedDot = NO;
+        }
+    }
 }
 
 #pragma mark ============ Scroller代理 ==============
@@ -306,6 +403,8 @@
     if ([_enterDataDict[self.scrollerModel.titlesArr[selectIndex]] integerValue] == 0) {
         if (_delegateFlags.firstEnterChilderVc) {
             [_mineDelegate mineScrollerVC:self firstEnterChilderVc:viewC];
+            FQ_MineScrollerBtn *btn = [self.titleView viewWithTag:(selectIndex + 1 + TitleBtnTag)];
+            btn.isShowRedDot = NO;
         }
         [_enterDataDict setObject:@"1" forKey:self.scrollerModel.titlesArr[selectIndex]];
     }else{
@@ -319,9 +418,9 @@
 //滑动子控制器调用
 -(CGFloat)changChildsViewWithIndex:(NSInteger)selectIndex
 {
-    UIButton * selectBtn = [self.titleView viewWithTag:(self.scrollerModel.selectIndex + 1 + TitleBtnTag)];
+    FQ_MineScrollerBtn * selectBtn = [self.titleView viewWithTag:(self.scrollerModel.selectIndex + 1 + TitleBtnTag)];
     selectBtn.selected = NO;
-    UIButton * selBtn = [self.titleView viewWithTag:(selectIndex + 1 + TitleBtnTag)];
+    FQ_MineScrollerBtn * selBtn = [self.titleView viewWithTag:(selectIndex + 1 + TitleBtnTag)];
     selBtn.selected = YES;
     self.scrollerModel.selectIndex = selectIndex;
     return selBtn.frame.origin.x;
@@ -330,10 +429,10 @@
 //点击按钮调用
 -(void)changTitleViewWithIndex:(NSInteger)selectIndex
 {
-    UIButton * selectBtn = [self.titleView viewWithTag:(self.scrollerModel.selectIndex + 1 + TitleBtnTag)];
+    FQ_MineScrollerBtn * selectBtn = [self.titleView viewWithTag:(self.scrollerModel.selectIndex + 1 + TitleBtnTag)];
     selectBtn.selected = NO;
     
-    UIButton * selBtn = [self.titleView viewWithTag:(selectIndex + 1 + TitleBtnTag)];
+    FQ_MineScrollerBtn * selBtn = [self.titleView viewWithTag:(selectIndex + 1 + TitleBtnTag)];
     selBtn.selected = YES;
     self.scrollerModel.selectIndex = selectIndex;
     UIViewController*viewC = self.childViewControllers[selectIndex];
@@ -344,6 +443,8 @@
     if ([_enterDataDict[self.scrollerModel.titlesArr[selectIndex]] integerValue] == 0) {
         if (_delegateFlags.firstEnterChilderVc) {
             [_mineDelegate mineScrollerVC:self firstEnterChilderVc:viewC];
+            FQ_MineScrollerBtn *btn = [self.titleView viewWithTag:(selectIndex + 1 + TitleBtnTag)];
+            btn.isShowRedDot = NO;
         }
         [_enterDataDict setObject:@"1" forKey:self.scrollerModel.titlesArr[selectIndex]];
     }else{
@@ -356,7 +457,7 @@
 }
 
 
--(void)clickTitleBtn:(UIButton *)selectBtn
+-(void)clickTitleBtn:(FQ_MineScrollerBtn *)selectBtn
 {
     [self changTitleViewWithIndex:(selectBtn.tag - TitleBtnTag - 1)];
 }

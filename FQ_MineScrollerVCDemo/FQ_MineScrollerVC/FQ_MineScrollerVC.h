@@ -9,6 +9,12 @@
 #import <UIKit/UIKit.h>
 #import "FQ_MineScrollerModel.h"
 
+@interface FQ_MineScrollerBtn : UIButton
+
+@property (nonatomic, assign) BOOL isShowRedDot;
+
+@end
+
 @class FQ_MineScrollerVC;
 
 /*
@@ -79,6 +85,20 @@
  @param scrollView 当前滚动scrollView
  */
 -(void)mineScroller_scrollviewDidScroll:(UIScrollView *)scrollView;
+
+/**
+ 显示标题上对应索引数组的红点
+
+ @param indexArr 索引数组
+ */
+-(void)showRedDotWithIndexArr:(NSArray *)indexArr;
+
+/**
+ 隐藏标题上对应索引数组的红点
+
+ @param indexArr 索引数组
+ */
+-(void)hiddenRedDotWithIndexArr:(NSArray *)indexArr;
 
 @end
 
