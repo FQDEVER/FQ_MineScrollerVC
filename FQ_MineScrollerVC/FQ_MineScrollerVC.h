@@ -91,14 +91,21 @@
 
  @param indexArr 索引数组
  */
--(void)showRedDotWithIndexArr:(NSArray *)indexArr;
+-(void)showRedDotWithIndexArr:(NSArray<NSNumber *> *)indexArr;
 
 /**
  隐藏标题上对应索引数组的红点
 
  @param indexArr 索引数组
  */
--(void)hiddenRedDotWithIndexArr:(NSArray *)indexArr;
+-(void)hiddenRedDotWithIndexArr:(NSArray<NSNumber *> *)indexArr;
+
+/**
+ 更新红点状态数组
+
+ @param redDotArr 红点状态数组
+ */
+-(void)changRedDotStatusWithArr:(NSArray<NSNumber *> *)redDotArr;
 
 @end
 
