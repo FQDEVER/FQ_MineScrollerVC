@@ -35,7 +35,7 @@
 -(void)creatRedDot{
     //新建小红点
     self.redView = [[CALayer alloc]init];
-    self.redView.cornerRadius = 5;
+    self.redView.cornerRadius = 4;
     self.redView.masksToBounds = YES;
     self.redView.backgroundColor = [UIColor redColor].CGColor;
     self.redView.frame = CGRectMake(0, 0, 8, 8);
@@ -55,7 +55,7 @@
     
     CGFloat titleRectMaxX = CGRectGetMaxX(titleRect);
     
-    self.redView.frame = CGRectMake(titleRectMaxX + 5, (titleRectH - 10) * 0.5 + titleRectY, 10, 10);
+    self.redView.frame = CGRectMake(titleRectMaxX + 4, (titleRectH - 8) * 0.5 + titleRectY, 8, 8);
     
 }
 
@@ -261,10 +261,12 @@
             }
             
             if ([_enterDataDict[self.scrollerModel.titlesArr[i - 1]] integerValue] == 0) {
-                if (_delegateFlags.firstEnterChilderVc) {
-                    [_mineDelegate mineScrollerVC:self firstEnterChilderVc:Vc];
+                if (self.scrollerModel.isEnterHiddenRedDot) {
                     FQ_MineScrollerBtn *btn = [self.titleView viewWithTag:(i + TitleBtnTag)];
                     btn.isShowRedDot = NO;
+                }
+                if (_delegateFlags.firstEnterChilderVc) {
+                    [_mineDelegate mineScrollerVC:self firstEnterChilderVc:Vc];
                 }
                 [_enterDataDict setObject:@"1" forKey:self.scrollerModel.titlesArr[i - 1]];
             }else{
@@ -416,10 +418,12 @@
     }
     
     if ([_enterDataDict[self.scrollerModel.titlesArr[selectIndex]] integerValue] == 0) {
-        if (_delegateFlags.firstEnterChilderVc) {
-            [_mineDelegate mineScrollerVC:self firstEnterChilderVc:viewC];
+        if (self.scrollerModel.isEnterHiddenRedDot) {
             FQ_MineScrollerBtn *btn = [self.titleView viewWithTag:(selectIndex + 1 + TitleBtnTag)];
             btn.isShowRedDot = NO;
+        }
+        if (_delegateFlags.firstEnterChilderVc) {
+            [_mineDelegate mineScrollerVC:self firstEnterChilderVc:viewC];
         }
         [_enterDataDict setObject:@"1" forKey:self.scrollerModel.titlesArr[selectIndex]];
     }else{
@@ -456,10 +460,12 @@
     }
     
     if ([_enterDataDict[self.scrollerModel.titlesArr[selectIndex]] integerValue] == 0) {
-        if (_delegateFlags.firstEnterChilderVc) {
-            [_mineDelegate mineScrollerVC:self firstEnterChilderVc:viewC];
+        if (self.scrollerModel.isEnterHiddenRedDot) {
             FQ_MineScrollerBtn *btn = [self.titleView viewWithTag:(selectIndex + 1 + TitleBtnTag)];
             btn.isShowRedDot = NO;
+        }
+        if (_delegateFlags.firstEnterChilderVc) {
+            [_mineDelegate mineScrollerVC:self firstEnterChilderVc:viewC];
         }
         [_enterDataDict setObject:@"1" forKey:self.scrollerModel.titlesArr[selectIndex]];
     }else{

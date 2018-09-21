@@ -55,6 +55,9 @@ typedef enum : NSInteger{
 //子控制器数组
 @property (strong, nonatomic) NSArray<UIViewController *> *childVCArr;
 
+//是否第一次进入就红点消失.默认为yes.如果为yes.即代表进入控制器就隐藏响应红点.如果为no.需要自己手动隐藏(例如:在网络请求成功以后才隐藏红点时.)
+@property (nonatomic, assign) BOOL isEnterHiddenRedDot;
+
 //下划线样式.默认:BottomLineTypeDefault
 @property (assign, nonatomic) BottomLineType lineType;
 

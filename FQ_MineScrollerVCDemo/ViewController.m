@@ -36,7 +36,7 @@
     scrollerModel.lineType = BottomLineTypeScaling;
     scrollerModel.lineLength  = 15;
     scrollerModel.titleRedDotArr = @[@1,@1,@1];
-
+//    scrollerModel.isEnterHiddenRedDot = NO;
     scrollerModel.titleViewType = TitleViewStatusType_Full_Right;
     scrollerModel.selectColor = [UIColor redColor];
     scrollerModel.defaultColor = [UIColor grayColor];
@@ -75,12 +75,17 @@
 -(void)mineScrollerVC:(FQ_MineScrollerVC *)scrollerVC firstEnterChilderVc:(UIViewController *)childerVc
 {
     NSLog(@"-------->是第一次进入%@==%zd",childerVc,self.scrollerModel.selectIndex);
+    
+    //根据请求:隐藏
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self hiddenRedDotWithIndexArr:@[@(self.scrollerModel.selectIndex)]];
+    });
 }
-
--(void)mineScrollerVC:(FQ_MineScrollerVC *)scrollerVC noneFirstEnterChilderVc:(UIViewController *)childerVc
-{
-    NSLog(@"-------->不是第一进入%@",childerVc);
-}
+//
+//-(void)mineScrollerVC:(FQ_MineScrollerVC *)scrollerVC noneFirstEnterChilderVc:(UIViewController *)childerVc
+//{
+//    NSLog(@"-------->不是第一进入%@",childerVc);
+//}
 
 
 @end

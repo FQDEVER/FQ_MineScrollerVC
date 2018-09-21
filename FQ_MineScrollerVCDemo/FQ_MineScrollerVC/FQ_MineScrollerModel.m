@@ -15,6 +15,14 @@
 
 @implementation FQ_MineScrollerModel
 
+-(instancetype)init
+{
+    if (self = [super init]) {
+        self.isEnterHiddenRedDot = YES;
+    }
+    return self;
+}
+
 -(void)setTitlesArr:(NSArray *)titlesArr
 {
     _titlesArr = titlesArr;
@@ -99,6 +107,7 @@
     }
     return 0;
 }
+
 
 @end
 

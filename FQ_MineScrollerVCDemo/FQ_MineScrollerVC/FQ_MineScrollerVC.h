@@ -22,7 +22,7 @@
  */
 @protocol FQ_MineScrollerVCDelegate <NSObject>
 
-@required
+@optional
 /**
  进入当前选中控制器
 
@@ -30,8 +30,6 @@
  @param childerVc 当前选中子控制器
  */
 -(void)mineScrollerVC:(FQ_MineScrollerVC *)scrollerVC enterChilderVc:(UIViewController *)childerVc;
-
-@optional
 
 /**
 
