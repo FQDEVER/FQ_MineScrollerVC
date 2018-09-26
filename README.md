@@ -41,4 +41,38 @@
             self.titleView.backgroundColor = [UIColor whiteColor];
             [self.view addSubview:self.titleView];
         }
+3.相关代理回调:`<FQ_MineScrollerVCDelegate>`
 
+     /*
+       如果需要监听第一次进入处理一些事情.可遵守该代理.并实现相关方法.
+      */
+     @protocol FQ_MineScrollerVCDelegate <NSObject>
+
+     @optional
+     /**
+      进入当前选中控制器
+
+      @param scrollerVC scrollerVC容器控制器
+      @param childerVc 当前选中子控制器
+      */
+     -(void)mineScrollerVC:(FQ_MineScrollerVC *)scrollerVC enterChilderVc:(UIViewController *)childerVc;
+
+     /**
+
+      第一次进入该选中控制器
+
+      @param scrollerVC scrollerVC容器控制器
+      @param childerVc 当前选中子控制器
+      */
+     -(void)mineScrollerVC:(FQ_MineScrollerVC *)scrollerVC firstEnterChilderVc:(UIViewController *)childerVc;
+
+     /**
+
+      不是第一次进入该选中控制器
+
+      @param scrollerVC scrollerVC容器控制器
+      @param childerVc 当前选中子控制器
+      */
+     -(void)mineScrollerVC:(FQ_MineScrollerVC *)scrollerVC noneFirstEnterChilderVc:(UIViewController *)childerVc;
+
+     @end
