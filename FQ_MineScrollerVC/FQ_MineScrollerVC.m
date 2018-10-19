@@ -260,11 +260,12 @@
                 [_mineDelegate mineScrollerVC:self enterChilderVc:Vc];
             }
             
+            if (self.scrollerModel.isEnterHiddenRedDot) {
+                FQ_MineScrollerBtn *btn = [self.titleView viewWithTag:(i + TitleBtnTag)];
+                btn.isShowRedDot = NO;
+            }
+            
             if ([_enterDataDict[self.scrollerModel.titlesArr[i - 1]] integerValue] == 0) {
-                if (self.scrollerModel.isEnterHiddenRedDot) {
-                    FQ_MineScrollerBtn *btn = [self.titleView viewWithTag:(i + TitleBtnTag)];
-                    btn.isShowRedDot = NO;
-                }
                 if (_delegateFlags.firstEnterChilderVc) {
                     [_mineDelegate mineScrollerVC:self firstEnterChilderVc:Vc];
                 }
@@ -417,11 +418,13 @@
         [_mineDelegate mineScrollerVC:self enterChilderVc:viewC];
     }
     
+    if (self.scrollerModel.isEnterHiddenRedDot) {
+        FQ_MineScrollerBtn *btn = [self.titleView viewWithTag:(selectIndex + 1 + TitleBtnTag)];
+        btn.isShowRedDot = NO;
+    }
+    
     if ([_enterDataDict[self.scrollerModel.titlesArr[selectIndex]] integerValue] == 0) {
-        if (self.scrollerModel.isEnterHiddenRedDot) {
-            FQ_MineScrollerBtn *btn = [self.titleView viewWithTag:(selectIndex + 1 + TitleBtnTag)];
-            btn.isShowRedDot = NO;
-        }
+       
         if (_delegateFlags.firstEnterChilderVc) {
             [_mineDelegate mineScrollerVC:self firstEnterChilderVc:viewC];
         }
@@ -458,12 +461,11 @@
     if (_delegateFlags.enterChilderVc) {
         [_mineDelegate mineScrollerVC:self enterChilderVc:viewC];
     }
-    
+    if (self.scrollerModel.isEnterHiddenRedDot) {
+        FQ_MineScrollerBtn *btn = [self.titleView viewWithTag:(selectIndex + 1 + TitleBtnTag)];
+        btn.isShowRedDot = NO;
+    }
     if ([_enterDataDict[self.scrollerModel.titlesArr[selectIndex]] integerValue] == 0) {
-        if (self.scrollerModel.isEnterHiddenRedDot) {
-            FQ_MineScrollerBtn *btn = [self.titleView viewWithTag:(selectIndex + 1 + TitleBtnTag)];
-            btn.isShowRedDot = NO;
-        }
         if (_delegateFlags.firstEnterChilderVc) {
             [_mineDelegate mineScrollerVC:self firstEnterChilderVc:viewC];
         }
