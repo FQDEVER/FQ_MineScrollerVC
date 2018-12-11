@@ -412,23 +412,27 @@
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
     NSInteger selectIndex = scrollView.contentOffset.x / ScreenW;
-    UIViewController*viewC = self.childViewControllers[selectIndex];
-    if (_delegateFlags.enterChilderVc) {
-        [_mineDelegate mineScrollerVC:self enterChilderVc:viewC];
-    }
-    
-    if ([_enterDataDict[self.scrollerModel.titlesArr[selectIndex]] integerValue] == 0) {
+    if (self.childViewControllers.count > selectIndex) {
+        UIViewController*viewC = self.childViewControllers[selectIndex];
+        if (_delegateFlags.enterChilderVc) {
+            [_mineDelegate mineScrollerVC:self enterChilderVc:viewC];
+        }
+        
         if (self.scrollerModel.isEnterHiddenRedDot) {
             FQ_MineScrollerBtn *btn = [self.titleView viewWithTag:(selectIndex + 1 + TitleBtnTag)];
             btn.isShowRedDot = NO;
         }
-        if (_delegateFlags.firstEnterChilderVc) {
-            [_mineDelegate mineScrollerVC:self firstEnterChilderVc:viewC];
-        }
-        [_enterDataDict setObject:@"1" forKey:self.scrollerModel.titlesArr[selectIndex]];
-    }else{
-        if (_delegateFlags.noneFirstEnterChilderVc) {
-            [_mineDelegate mineScrollerVC:self noneFirstEnterChilderVc:viewC];
+        
+        if ([_enterDataDict[self.scrollerModel.titlesArr[selectIndex]] integerValue] == 0) {
+            
+            if (_delegateFlags.firstEnterChilderVc) {
+                [_mineDelegate mineScrollerVC:self firstEnterChilderVc:viewC];
+            }
+            [_enterDataDict setObject:@"1" forKey:self.scrollerModel.titlesArr[selectIndex]];
+        }else{
+            if (_delegateFlags.noneFirstEnterChilderVc) {
+                [_mineDelegate mineScrollerVC:self noneFirstEnterChilderVc:viewC];
+            }
         }
     }
 }
