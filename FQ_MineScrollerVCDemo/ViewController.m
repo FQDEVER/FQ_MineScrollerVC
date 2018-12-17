@@ -35,9 +35,10 @@
     scrollerModel.childVCArr = @[dynamicVc,fansVc,focusVc];
     scrollerModel.lineType = BottomLineTypeScaling;
     scrollerModel.lineLength  = 15;
+    scrollerModel.lineHeight = 4.0f;
     scrollerModel.titleRedDotArr = @[@1,@1,@1];
 //    scrollerModel.isEnterHiddenRedDot = NO;
-    scrollerModel.titleViewType = TitleViewStatusType_Full_Right;
+    scrollerModel.titleViewType = TitleViewStatusType_Full_Center;
     scrollerModel.selectColor = [UIColor redColor];
     scrollerModel.defaultColor = [UIColor grayColor];
     scrollerModel.titleFont = [UIFont systemFontOfSize:15];

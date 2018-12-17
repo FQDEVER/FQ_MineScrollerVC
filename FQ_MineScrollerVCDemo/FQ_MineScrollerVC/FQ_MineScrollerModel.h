@@ -30,8 +30,9 @@
 
 typedef enum : NSInteger{
     BottomLineTypeNone, //无下划线
-    BottomLineTypeDefault = 0, //默认
+    BottomLineTypeDefault = 0, //默认-bottom
     BottomLineTypeScaling, //拉伸
+    BottomLineTypeDefault_Up, //在顶部
 }BottomLineType;
 
 typedef enum : NSInteger{
@@ -55,11 +56,11 @@ typedef enum : NSInteger{
 //子控制器数组
 @property (strong, nonatomic) NSArray<UIViewController *> *childVCArr;
 
+//子视图数组
+@property (strong, nonatomic) NSArray<UIView *> *childViewArr;
+
 //是否第一次进入就红点消失.默认为yes.如果为yes.即代表进入控制器就隐藏响应红点.如果为no.需要自己手动隐藏(例如:在网络请求成功以后才隐藏红点时.)
 @property (nonatomic, assign) BOOL isEnterHiddenRedDot;
-
-//下划线样式.默认:BottomLineTypeDefault
-@property (assign, nonatomic) BottomLineType lineType;
 
 //titleView默认颜色
 @property (strong, nonatomic) UIColor *defaultColor;
@@ -67,17 +68,23 @@ typedef enum : NSInteger{
 //titleView选中颜色
 @property (strong, nonatomic) UIColor *selectColor;
 
-//普通下滑线的颜色
-@property (strong, nonatomic) UIColor *lineColor;
-
 //titleView的文字
 @property (nonatomic, strong) UIFont *titleFont;
+
+//下划线样式.默认:BottomLineTypeDefault
+@property (assign, nonatomic) BottomLineType lineType;
+
+//普通下滑线的颜色
+@property (strong, nonatomic) UIColor *lineColor;
 
 //下滑线使用Scaling拉伸样式.渐变颜色.CGColor.或者UIColor对象.不设置则使用随机色
 @property (strong, nonatomic) NSArray *line_Scaling_colors;
 
 //使用拉伸时可设置线长.默认为0.随文字长度变化!一旦设置所有下划线长度均固定
 @property (assign, nonatomic) CGFloat lineLength;
+
+//线的高度.默认为2.
+@property (assign, nonatomic) CGFloat lineHeight;
 
 //titleView选中的索引
 @property (assign, nonatomic) NSInteger selectIndex;
