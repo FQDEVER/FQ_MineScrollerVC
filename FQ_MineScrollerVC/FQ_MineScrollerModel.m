@@ -19,6 +19,7 @@
 {
     if (self = [super init]) {
         self.isEnterHiddenRedDot = YES;
+        _lineHeight = 2.0f;
     }
     return self;
 }

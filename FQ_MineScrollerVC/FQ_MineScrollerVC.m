@@ -203,7 +203,7 @@
         titleBtnX += titleW;
     }
     
-    if (self.scrollerModel.lineType == BottomLineTypeDefault) {
+    if (self.scrollerModel.lineType == BottomLineTypeDefault || self.scrollerModel.lineType == BottomLineTypeDefault_Up) {
         
         UIView * selectView = [self.titleView viewWithTag:(self.scrollerModel.selectIndex + TitleBtnTag + 1)];
         CGFloat lineViewX = selectView.frame.origin.x;
@@ -212,9 +212,9 @@
         if (self.scrollerModel.lineLength) {
             lineViewX = lineViewX + (selectView.frame.size.width - self.scrollerModel.lineLength) * 0.5;
             lineViewW = self.scrollerModel.lineLength;
-            self.lineView = [[UIView alloc]initWithFrame:CGRectMake(lineViewX, self.titleView.bounds.size.height - 2, lineViewW, 2)];
+            self.lineView = [[UIView alloc]initWithFrame:CGRectMake(lineViewX,self.scrollerModel.lineType == BottomLineTypeDefault ? self.titleView.bounds.size.height - self.scrollerModel.lineHeight : 0, lineViewW, self.scrollerModel.lineHeight)];
         }else{
-            self.lineView = [[UIView alloc]initWithFrame:CGRectMake(lineViewX, self.titleView.bounds.size.height - 2, lineViewW, 2)];
+            self.lineView = [[UIView alloc]initWithFrame:CGRectMake(lineViewX, self.scrollerModel.lineType == BottomLineTypeDefault ? self.titleView.bounds.size.height - self.scrollerModel.lineHeight : 0, lineViewW, self.scrollerModel.lineHeight)];
         }
         self.lineView.backgroundColor = self.scrollerModel.lineColor;
         [self.titleView addSubview:self.lineView];
@@ -230,10 +230,10 @@
         
         if (self.scrollerModel.lineLength) { //有值
             //固定线宽的
-            self.lineColorView = [[FQ_LineColorView alloc]initWithFrame:CGRectMake(0,self.titleView.bounds.size.height - 8, self.titleView.contentSize.width, 2) StartPoint:selectView.center startLength:self.scrollerModel.lineLength endPoint:nextView.center endLength:self.scrollerModel.lineLength Colors:self.scrollerModel.line_Scaling_colors locations:titlesCenterX];
+            self.lineColorView = [[FQ_LineColorView alloc]initWithFrame:CGRectMake(0,self.titleView.bounds.size.height - 8, self.titleView.contentSize.width, self.scrollerModel.lineHeight) StartPoint:selectView.center startLength:self.scrollerModel.lineLength endPoint:nextView.center endLength:self.scrollerModel.lineLength Colors:self.scrollerModel.line_Scaling_colors locations:titlesCenterX];
         }else{
             //随着文字大小变化的
-            self.lineColorView = [[FQ_LineColorView alloc]initWithFrame:CGRectMake(0,self.titleView.bounds.size.height - 8, self.titleView.contentSize.width, 2) StartPoint:selectView.center startLength:selectLength.floatValue endPoint:nextView.center endLength:nextLength.floatValue Colors:self.scrollerModel.line_Scaling_colors locations:titlesCenterX];
+            self.lineColorView = [[FQ_LineColorView alloc]initWithFrame:CGRectMake(0,self.titleView.bounds.size.height - 8, self.titleView.contentSize.width, self.scrollerModel.lineHeight) StartPoint:selectView.center startLength:selectLength.floatValue endPoint:nextView.center endLength:nextLength.floatValue Colors:self.scrollerModel.line_Scaling_colors locations:titlesCenterX];
         }
         
         [self.titleView addSubview:self.lineColorView];
@@ -245,41 +245,52 @@
 {
     CGFloat childsViewW = ScreenW;
     CGFloat childsViewH = ScreenH - TitleViewH;
-    NSArray * childsViewArr = self.scrollerModel.childVCArr;
     
-    for (int i = 1; i <= childsViewArr.count; i++) {
-        UIViewController * Vc = childsViewArr[i - 1];
-        [self addChildViewController:Vc];
-        Vc.view.frame = CGRectMake((i-1)*childsViewW, 0, childsViewW, childsViewH);
-        [self.childsView addSubview:Vc.view];
-        
-        if (self.scrollerModel.selectIndex == i - 1) {
-            [self.childsView setContentOffset:CGPointMake((i - 1) * childsViewW, 0) animated:YES];
-
-            if (_delegateFlags.enterChilderVc) {
-                [_mineDelegate mineScrollerVC:self enterChilderVc:Vc];
-            }
+    NSArray * childsViewArr;
+    if (self.scrollerModel.childVCArr.count > 0) {
+        childsViewArr = self.scrollerModel.childVCArr;
+        for (int i = 1; i <= childsViewArr.count; i++) {
+            UIViewController * Vc = childsViewArr[i - 1];
+            [self addChildViewController:Vc];
+            Vc.view.frame = CGRectMake((i-1)*childsViewW, 0, childsViewW, childsViewH);
+            [self.childsView addSubview:Vc.view];
             
-            if (self.scrollerModel.isEnterHiddenRedDot) {
-                FQ_MineScrollerBtn *btn = [self.titleView viewWithTag:(i + TitleBtnTag)];
-                btn.isShowRedDot = NO;
+            if (self.scrollerModel.selectIndex == i - 1) {
+                [self.childsView setContentOffset:CGPointMake((i - 1) * childsViewW, 0) animated:YES];
+                
+                if (_delegateFlags.enterChilderVc) {
+                    [_mineDelegate mineScrollerVC:self enterChilderVc:Vc];
+                }
+                
+                if ([_enterDataDict[self.scrollerModel.titlesArr[i - 1]] integerValue] == 0) {
+                    if (self.scrollerModel.isEnterHiddenRedDot) {
+                        FQ_MineScrollerBtn *btn = [self.titleView viewWithTag:(i + TitleBtnTag)];
+                        btn.isShowRedDot = NO;
+                    }
+                    if (_delegateFlags.firstEnterChilderVc) {
+                        [_mineDelegate mineScrollerVC:self firstEnterChilderVc:Vc];
+                    }
+                    [_enterDataDict setObject:@"1" forKey:self.scrollerModel.titlesArr[i - 1]];
+                }else{
+                    if (_delegateFlags.noneFirstEnterChilderVc) {
+                        [_mineDelegate mineScrollerVC:self noneFirstEnterChilderVc:Vc];
+                    }
+                }
             }
+        }
+    }else if (self.scrollerModel.childViewArr.count > 0){
+        childsViewArr = self.scrollerModel.childViewArr;
+        for (int i = 1; i <= childsViewArr.count; i++) {
+            UIView * childView = childsViewArr[i - 1];
             
-            if ([_enterDataDict[self.scrollerModel.titlesArr[i - 1]] integerValue] == 0) {
-                if (_delegateFlags.firstEnterChilderVc) {
-                    [_mineDelegate mineScrollerVC:self firstEnterChilderVc:Vc];
-                }
-                [_enterDataDict setObject:@"1" forKey:self.scrollerModel.titlesArr[i - 1]];
-            }else{
-                if (_delegateFlags.noneFirstEnterChilderVc) {
-                    [_mineDelegate mineScrollerVC:self noneFirstEnterChilderVc:Vc];
-                }
-            }
+            childView.frame = CGRectMake((i-1)*childsViewW, 0, childsViewW, childsViewH);
+            [self.childsView addSubview:childView];
         }
     }
     self.childsView.contentSize = CGSizeMake(childsViewW * childsViewArr.count, 0);
 }
 
+    
 -(void)creatSeparatorView{
 
     self.separatorView= [[UIView alloc]initWithFrame:CGRectZero];
@@ -357,7 +368,7 @@
         }
         
         //线是默认样式
-        if (self.scrollerModel.lineType == BottomLineTypeDefault) {
+        if (self.scrollerModel.lineType == BottomLineTypeDefault || self.scrollerModel.lineType == BottomLineTypeDefault_Up) {
             
             CGRect lineRect = self.lineView.frame;
             
@@ -463,11 +474,12 @@
     if (_delegateFlags.enterChilderVc) {
         [_mineDelegate mineScrollerVC:self enterChilderVc:viewC];
     }
-    if (self.scrollerModel.isEnterHiddenRedDot) {
-        FQ_MineScrollerBtn *btn = [self.titleView viewWithTag:(selectIndex + 1 + TitleBtnTag)];
-        btn.isShowRedDot = NO;
-    }
+    
     if ([_enterDataDict[self.scrollerModel.titlesArr[selectIndex]] integerValue] == 0) {
+        if (self.scrollerModel.isEnterHiddenRedDot) {
+            FQ_MineScrollerBtn *btn = [self.titleView viewWithTag:(selectIndex + 1 + TitleBtnTag)];
+            btn.isShowRedDot = NO;
+        }
         if (_delegateFlags.firstEnterChilderVc) {
             [_mineDelegate mineScrollerVC:self firstEnterChilderVc:viewC];
         }
