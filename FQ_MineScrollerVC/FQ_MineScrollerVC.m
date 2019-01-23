@@ -166,9 +166,9 @@
             titleBtnX = (ScreenW - self.scrollerModel.titleContentSizeW) * 0.5;
         }else{
             marginW = (ScreenW - self.scrollerModel.titleContentSizeW)/titleArr.count;
-            self.titleView.frame = CGRectMake(0, IS_IPHONE_X ? 88 : 64, ScreenW, TitleViewH);
+            self.titleView.frame = CGRectMake(0, IS_IPHONE_X_SERIES ? 88 : 64, ScreenW, TitleViewH);
 
-        }
+        } 
     }
     
     NSMutableArray * titlesCenterX = [NSMutableArray array];
@@ -510,7 +510,7 @@
 {
     if (!_childsView) {
 
-        _childsView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, TitleViewH + (IS_IPHONE_X ? 88 : 64),ScreenW, ScreenH - TitleViewH)];
+        _childsView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, TitleViewH + (IS_IPHONE_X_SERIES ? 88 : 64),ScreenW, ScreenH - TitleViewH)];
         _childsView.bounces = NO;
         _childsView.pagingEnabled = YES;
         _childsView.delegate = self;
@@ -523,7 +523,7 @@
 -(UIScrollView *)titleView
 {
     if (!_titleView) {
-        _titleView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, IS_IPHONE_X ? 88 : 64, ScreenW, TitleViewH)];
+        _titleView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, IS_IPHONE_X_SERIES ? 88 : 64, ScreenW, TitleViewH)];
         _titleView.backgroundColor = [UIColor whiteColor];
         _titleView.bounces = NO;
         _titleView.delegate = self;
