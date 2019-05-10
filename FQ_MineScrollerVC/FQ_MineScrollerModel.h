@@ -24,7 +24,6 @@
 //所有流海屏幕
 #define IS_IPHONE_X_SERIES  IS_IPHONE_X || IS_IPHONE_Xr || IS_IPHONE_Xs || IS_IPHONE_Xs_Max
 
-#define TitleMargin 40
 #define TitleViewH 44
 #define TitleViewFontSize 15
 #define TitleViewW ScreenW-60
@@ -79,6 +78,9 @@ typedef enum : NSInteger{
 //titleView的文字
 @property (nonatomic, strong) UIFont *titleFont;
 
+//titleView文本之间的间距.默认为40.
+@property (nonatomic, assign,readonly) CGFloat titleMargin;
+
 //下划线样式.默认:BottomLineTypeDefault
 @property (assign, nonatomic) BottomLineType lineType;
 
@@ -107,6 +109,9 @@ typedef enum : NSInteger{
  只针对titleView总长度不超过屏宽的情况,titleView显示的样式.默认居左
  */
 @property (assign, nonatomic) TitleViewStatusType titleViewType;
+
+//初始化时.规定标题之间的间距
+-(instancetype)initWithTitleMargin:(CGFloat)titleMargin;
 
 @end
 

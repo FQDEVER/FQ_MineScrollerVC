@@ -9,6 +9,10 @@
 #import <UIKit/UIKit.h>
 #import "FQ_MineScrollerModel.h"
 
+@interface FQ_ScrollView : UIScrollView
+
+@end
+
 @interface FQ_MineScrollerBtn : UIButton
 
 @property (nonatomic, assign) BOOL isShowRedDot;

@@ -9,6 +9,8 @@
 #import "FQ_MineScrollerModel.h"
 
 @interface FQ_MineScrollerModel()
+//titleView文本之间的间距.默认为40.
+@property (nonatomic, assign) CGFloat titleMargin;
 
 @end
 
@@ -20,6 +22,17 @@
     if (self = [super init]) {
         self.isEnterHiddenRedDot = YES;
         _lineHeight = 2.0f;
+        _titleMargin = 40;
+    }
+    return self;
+}
+
+//初始化时.规定标题之间的间距
+-(instancetype)initWithTitleMargin:(CGFloat)titleMargin{
+    if (self = [super init]) {
+        self.isEnterHiddenRedDot = YES;
+        _lineHeight = 2.0f;
+        _titleMargin = titleMargin;
     }
     return self;
 }
@@ -35,7 +48,7 @@
     for (NSString * title in titlesArr) { //44就是顶部的高度
         CGFloat titleW = [title boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, TitleViewH) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName : [UIFont systemFontOfSize:TitleViewFontSize]} context:nil].size.width;
         [titlesLength addObject:@(titleW)];
-        titleSizeW += (titleW + TitleMargin);
+        titleSizeW += (titleW + self.titleMargin);
     }
     self.titlesLength = titlesLength.copy;//这个是文字宽度
     self.titleContentSizeW = titleSizeW; //这个是按钮宽度

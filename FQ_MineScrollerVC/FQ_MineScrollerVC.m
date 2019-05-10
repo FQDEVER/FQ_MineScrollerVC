@@ -9,6 +9,20 @@
 #import "FQ_MineScrollerVC.h"
 #import "FQ_LineColorView.h"
 
+@implementation FQ_ScrollView
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    if (self.contentOffset.x <= 0) {
+        if ([otherGestureRecognizer.delegate isKindOfClass:NSClassFromString(@"FQ_ScrollView")]) {
+            return YES;
+        }
+    }
+    return NO;
+}
+
+@end
+
+
 @interface FQ_MineScrollerBtn()
 
 @property (nonatomic, strong) CALayer *redView;
@@ -78,9 +92,9 @@
 }
 
 //子控制器集合
-@property (strong, nonatomic) UIScrollView *childsView;
+@property (strong, nonatomic) FQ_ScrollView *childsView;
 //标题集合.可以布局标题
-@property (strong, nonatomic) UIScrollView *titleView;
+@property (strong, nonatomic) FQ_ScrollView *titleView;
 //拉伸选中线条样式
 @property (strong, nonatomic) FQ_LineColorView *lineColorView;
 //默认选中线条样式
@@ -175,10 +189,10 @@
     for (int i = 1; i <= titleArr.count; i++) {
         
         NSNumber * titleLength = self.scrollerModel.titlesLength[i-1];
-        CGFloat titleW = titleLength.floatValue + TitleMargin + marginW;
+        CGFloat titleW = titleLength.floatValue + self.scrollerModel.titleMargin + marginW;
         
         if (self.scrollerModel.titleViewType == TitleViewStatusType_Full_Left || self.scrollerModel.titleViewType == TitleViewStatusType_Full_Right || self.scrollerModel.titleViewType == TitleViewStatusType_Full_Center) {
-            titleW = titleLength.floatValue + TitleMargin;
+            titleW = titleLength.floatValue + self.scrollerModel.titleMargin;
         }
         BOOL isShowRed = NO;
         if (self.scrollerModel.titleRedDotArr.count > i - 1) {
@@ -510,7 +524,7 @@
 {
     if (!_childsView) {
 
-        _childsView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, TitleViewH + (IS_IPHONE_X_SERIES ? 88 : 64),ScreenW, ScreenH - TitleViewH)];
+        _childsView = [[FQ_ScrollView alloc]initWithFrame:CGRectMake(0, TitleViewH + (IS_IPHONE_X_SERIES ? 88 : 64),ScreenW, ScreenH - TitleViewH)];
         _childsView.bounces = NO;
         _childsView.pagingEnabled = YES;
         _childsView.delegate = self;
@@ -523,7 +537,7 @@
 -(UIScrollView *)titleView
 {
     if (!_titleView) {
-        _titleView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, IS_IPHONE_X_SERIES ? 88 : 64, ScreenW, TitleViewH)];
+        _titleView = [[FQ_ScrollView alloc]initWithFrame:CGRectMake(0, IS_IPHONE_X_SERIES ? 88 : 64, ScreenW, TitleViewH)];
         _titleView.backgroundColor = [UIColor whiteColor];
         _titleView.bounces = NO;
         _titleView.delegate = self;
