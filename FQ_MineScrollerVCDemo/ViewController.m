@@ -7,6 +7,7 @@
 //
 
 #import "ViewController.h"
+#define NAVIGATION_HEIGHT 64
 @interface ViewController ()<FQ_MineScrollerVCDelegate>
 
 @end
@@ -22,7 +23,7 @@
 
 -(void)creatUI{
 
-    FQ_MineScrollerModel * scrollerModel = [[FQ_MineScrollerModel alloc]init];
+    FQ_MineScrollerModel * scrollerModel = [[FQ_MineScrollerModel alloc]initWithTitleMargin:20];
     UIViewController * dynamicVc = [[UIViewController alloc]init];
     dynamicVc.view.backgroundColor = [UIColor redColor];
     UIViewController * fansVc = [[UIViewController alloc]init];
@@ -31,7 +32,8 @@
     focusVc.view.backgroundColor = [UIColor orangeColor];
 
     scrollerModel.selectIndex = 0;
-    scrollerModel.titlesArr = @[@"动态",@"粉丝",@"关注"];
+//    scrollerModel.titlesArr = @[@"动态",@"粉丝",@"关注"];
+    scrollerModel.titlesArr = @[@"强度分钟数",@"最大摄氧量",@"乳酸阈值"];
     scrollerModel.childVCArr = @[dynamicVc,fansVc,focusVc];
     scrollerModel.lineType = BottomLineTypeScaling;
     scrollerModel.lineLength  = 15;
