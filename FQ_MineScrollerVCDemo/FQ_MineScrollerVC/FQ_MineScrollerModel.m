@@ -9,8 +9,6 @@
 #import "FQ_MineScrollerModel.h"
 
 @interface FQ_MineScrollerModel()
-//titleView文本之间的间距.默认为40.
-@property (nonatomic, assign) CGFloat titleMargin;
 
 @end
 
@@ -23,6 +21,10 @@
         self.isEnterHiddenRedDot = YES;
         _lineHeight = 2.0f;
         _titleMargin = 40;
+        _titleFont = [UIFont systemFontOfSize:TitleViewFontSize];
+        _norTitleFont = [UIFont systemFontOfSize:TitleViewFontSize];
+        _selTitleFont = [UIFont systemFontOfSize:TitleViewFontSize];
+        _titleLineMargin = 8.0;
     }
     return self;
 }
@@ -82,14 +84,6 @@
     return [UIColor darkTextColor];
 }
 
--(UIFont *)titleFont
-{
-    if (_titleFont) {
-        return _titleFont;
-    }
-    return [UIFont systemFontOfSize:TitleViewFontSize];
-}
-
 -(NSArray *)line_Scaling_colors
 {
     if ([_line_Scaling_colors.firstObject isKindOfClass:[UIColor class]]) {
@@ -107,7 +101,7 @@
         
         NSMutableArray * randomColors = [NSMutableArray array];
         for (int i = 0; i < self.titlesArr.count; i++) {
-
+            
             [randomColors addObject:(id)RandomColor.CGColor];
         }
         return randomColors.copy;

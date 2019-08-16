@@ -92,14 +92,29 @@
 -(void)setShapeLayerWithStartPoint:(CGPoint)startPoint startLength:(CGFloat)startLength endPoint:(CGPoint)endPoint endLength:(CGFloat)endLength andProgress:(CGFloat)progress
 {
     [self.path removeAllPoints];
-
+    BOOL isChangBig = endPoint.x > startPoint.x;
+    
     CGFloat lineMargin = endPoint.x - startPoint.x - startLength *0.5 - endLength * 0.5;
-    if (progress < 0.5) {
-        [self.path moveToPoint:CGPointMake(startPoint.x - startLength * 0.5, M_ScreenH * 0.5)];
-        [self.path addLineToPoint:CGPointMake(startPoint.x + startLength * 0.5 +(lineMargin + endLength) * progress * 2.0 , M_ScreenH * 0.5)];
+    if (!isChangBig) {
+        lineMargin = startPoint.x - endPoint.x - startLength * 0.5 - endLength * 0.5;
+    }
+    NSLog(@"-------------->lineMargin %f -----progress %f",lineMargin,progress);
+    if (isChangBig) {
+        if (progress < 0.5) {
+            [self.path moveToPoint:CGPointMake(startPoint.x - startLength * 0.5, M_ScreenH * 0.5)];
+            [self.path addLineToPoint:CGPointMake(startPoint.x + startLength * 0.5 +(lineMargin + endLength) * progress * 2.0 , M_ScreenH * 0.5)];
+        }else{
+            [self.path moveToPoint:CGPointMake(startPoint.x - startLength * 0.5 +(startLength + lineMargin) * (progress - 0.5) * 2.0 , M_ScreenH * 0.5)];
+            [self.path addLineToPoint:CGPointMake(endPoint.x +endLength *0.5, M_ScreenH * 0.5)];
+        }
     }else{
-        [self.path moveToPoint:CGPointMake(startPoint.x - startLength * 0.5 +(startLength + lineMargin) * (progress - 0.5) * 2.0 , M_ScreenH * 0.5)];
-        [self.path addLineToPoint:CGPointMake(endPoint.x +endLength *0.5, M_ScreenH * 0.5)];
+        if (progress < 0.5) {
+            [self.path moveToPoint:CGPointMake(startPoint.x + startLength * 0.5, M_ScreenH * 0.5)];
+            [self.path addLineToPoint:CGPointMake(startPoint.x - startLength * 0.5 -(lineMargin + endLength) * progress * 2.0 , M_ScreenH * 0.5)];
+        }else{
+            [self.path moveToPoint:CGPointMake(startPoint.x + startLength * 0.5-(startLength + lineMargin) * (progress - 0.5) * 2.0 , M_ScreenH * 0.5)];
+            [self.path addLineToPoint:CGPointMake(endPoint.x - endLength *0.5, M_ScreenH * 0.5)];
+        }
     }
     self.lineLayer.path = self.path.CGPath;
 }

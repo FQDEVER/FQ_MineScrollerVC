@@ -22,42 +22,51 @@
 }
 
 -(void)creatUI{
-
-    FQ_MineScrollerModel * scrollerModel = [[FQ_MineScrollerModel alloc]initWithTitleMargin:20];
+    
+    FQ_MineScrollerModel * scrollerModel = [[FQ_MineScrollerModel alloc]initWithTitleMargin:40];
     UIViewController * dynamicVc = [[UIViewController alloc]init];
     dynamicVc.view.backgroundColor = [UIColor redColor];
     UIViewController * fansVc = [[UIViewController alloc]init];
     fansVc.view.backgroundColor = [UIColor greenColor];
     UIViewController * focusVc = [[UIViewController alloc]init];
     focusVc.view.backgroundColor = [UIColor orangeColor];
-
+    
     scrollerModel.selectIndex = 0;
-//    scrollerModel.titlesArr = @[@"动态",@"粉丝",@"关注"];
-    scrollerModel.titlesArr = @[@"强度分钟数",@"最大摄氧量",@"乳酸阈值"];
+    scrollerModel.titlesArr = @[@"强度",@"最大",@"乳酸"];
     scrollerModel.childVCArr = @[dynamicVc,fansVc,focusVc];
     scrollerModel.lineType = BottomLineTypeScaling;
-    scrollerModel.lineLength  = 15;
-    scrollerModel.lineHeight = 4.0f;
-    scrollerModel.titleRedDotArr = @[@1,@1,@1];
-//    scrollerModel.isEnterHiddenRedDot = NO;
-    scrollerModel.titleViewType = TitleViewStatusType_Full_Center;
-    scrollerModel.selectColor = [UIColor redColor];
+    scrollerModel.lineLength  = 40;
+    scrollerModel.lineHeight  = 15;
+    scrollerModel.titleLineMargin = 6;
+    scrollerModel.titleMargin = 35;
+    scrollerModel.titleViewType = TitleViewStatusType_Full_Left;
+    scrollerModel.selectColor = [UIColor blackColor];
     scrollerModel.defaultColor = [UIColor grayColor];
-    scrollerModel.titleFont = [UIFont systemFontOfSize:15];
+    scrollerModel.selTitleFont = [UIFont boldSystemFontOfSize:25];
+    scrollerModel.norTitleFont = [UIFont boldSystemFontOfSize:15];
+    scrollerModel.line_Scaling_colors = @[RGB(55.0, 201.0, 105.0),RGB(40, 168, 152)];
     self.scrollerModel = scrollerModel;
-
-    self.childsView.frame = CGRectMake(0, NAVIGATION_HEIGHT + 44, ScreenW , ScreenH - NAVIGATION_HEIGHT - 44);
+    
+    //重新布局childview
+    self.childsView.frame = CGRectMake(0, 64 + 54, ScreenW , ScreenH - 64 - 54);
     self.childsView.contentSize = CGSizeMake(scrollerModel.titlesArr.count * ScreenW, 0);
-
-
-    UIView *separatorView= [[UIView alloc]init];
-    separatorView.backgroundColor = [UIColor blueColor];
-    [self.titleView addSubview:separatorView];
-    separatorView.frame = CGRectMake(0, 44 - 0.5, ScreenW, 0.5);
-
-    self.titleView.frame = CGRectMake(0, NAVIGATION_HEIGHT, ScreenW, 44);
+    //重新布局titleView
+    self.titleView.frame = CGRectMake(10, 64, ScreenW - 20, 54);
     self.titleView.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:self.titleView];
+    
+    //    self.childsView.frame = CGRectMake(0, NAVIGATION_HEIGHT + 44, ScreenW , ScreenH - NAVIGATION_HEIGHT - 44);
+    //    self.childsView.contentSize = CGSizeMake(scrollerModel.titlesArr.count * ScreenW, 0);
+    //
+    //
+    //    UIView *separatorView= [[UIView alloc]init];
+    //    separatorView.backgroundColor = [UIColor blueColor];
+    //    [self.titleView addSubview:separatorView];
+    //    separatorView.frame = CGRectMake(0, 54 - 0.5, ScreenW, 0.5);
+    //
+    //    self.titleView.frame = CGRectMake(0, NAVIGATION_HEIGHT, ScreenW, 54);
+    //    self.titleView.backgroundColor = [UIColor whiteColor];
+    //    [self.view addSubview:self.titleView];
 }
 
 -(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event

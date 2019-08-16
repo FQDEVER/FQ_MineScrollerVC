@@ -77,9 +77,19 @@ typedef enum : NSInteger{
 
 //titleView的文字
 @property (nonatomic, strong) UIFont *titleFont;
+/**
+ 选中字体
+ */
+@property (nonatomic, strong) UIFont *selTitleFont;
+/**
+ 默认字体
+ */
+@property (nonatomic, strong) UIFont *norTitleFont;
 
 //titleView文本之间的间距.默认为40.
-@property (nonatomic, assign,readonly) CGFloat titleMargin;
+//@property (nonatomic, assign,readonly) CGFloat titleMargin;
+//titleView文本之间的间距.默认为40.
+@property (nonatomic, assign) CGFloat titleMargin;
 
 //下划线样式.默认:BottomLineTypeDefault
 @property (assign, nonatomic) BottomLineType lineType;
@@ -95,6 +105,11 @@ typedef enum : NSInteger{
 
 //线的高度.默认为2.
 @property (assign, nonatomic) CGFloat lineHeight;
+
+/**
+ titlveiw与线之间的间距
+ */
+@property (nonatomic, assign) CGFloat titleLineMargin;
 
 //titleView选中的索引
 @property (assign, nonatomic) NSInteger selectIndex;

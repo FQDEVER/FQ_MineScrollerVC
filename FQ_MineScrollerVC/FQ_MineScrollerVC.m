@@ -27,6 +27,8 @@
 
 @property (nonatomic, strong) CALayer *redView;
 
+@property (nonatomic, assign) CGFloat progress;
+
 @end
 
 @implementation FQ_MineScrollerBtn
@@ -55,6 +57,11 @@
     self.redView.frame = CGRectMake(0, 0, 8, 8);
     [self.layer addSublayer:self.redView];
     self.redView.hidden = YES;
+    if (self.selected) {
+        self.titleLabel.font = self.selectFont;
+    }else{
+        self.titleLabel.font = self.normalFont;
+    }
 }
 
 -(void)layoutSubviews
@@ -70,7 +77,19 @@
     CGFloat titleRectMaxX = CGRectGetMaxX(titleRect);
     
     self.redView.frame = CGRectMake(titleRectMaxX + 4, (titleRectH - 8) * 0.5 + titleRectY, 8, 8);
-    
+}
+
+-(void)setSelected:(BOOL)selected
+{
+    [super setSelected:selected];
+    //因为文本需要变大变小.重新设置font.所以在设置select的时候.只有进度完成时/或未开始时设定
+    if (self.progress == 0 || self.progress == 1) {
+        if (selected) {
+            self.titleLabel.font = self.selectFont;
+        }else{
+            self.titleLabel.font = self.normalFont;
+        }
+    }
 }
 
 -(void)setIsShowRedDot:(BOOL)isShowRedDot
@@ -78,6 +97,46 @@
     _isShowRedDot = isShowRedDot;
     
     self.redView.hidden = !isShowRedDot;
+}
+
+/**
+ 更新字体的大小
+ 
+ @param progress 进度判断
+ @param isAdd 是否增大
+ */
+-(void)changeFontWithOffset:(CGFloat)progress isAdd:(BOOL)isAdd
+{
+    _progress = progress;
+    CGFloat selFontSize = [self.selectFont pointSize];
+    CGFloat norFontSize = [self.normalFont pointSize];
+    NSString *selFontName = [self.selectFont fontName];
+    NSString *norFontName = [self.normalFont fontName];
+    CGFloat offFont = selFontSize - norFontSize;
+    UIFont *tempFont = [UIFont systemFontOfSize:15];
+    
+    if (isAdd) {
+        if(self.selected){
+            tempFont = [UIFont fontWithName:selFontName size:norFontSize + offFont * progress];
+        }else{
+            tempFont = [UIFont fontWithName:norFontName size:norFontSize + offFont * progress];
+        }
+    }else{
+        
+        if(self.selected){
+            tempFont = [UIFont fontWithName:selFontName size:selFontSize - offFont * progress];
+        }else{
+            tempFont = [UIFont fontWithName:norFontName size:selFontSize - offFont * progress];
+        }
+    }
+    
+    if (self.selected && progress == 1) {
+        self.titleLabel.font = self.selectFont;
+    }else if (!self.selected && progress == 1){
+        self.titleLabel.font = self.normalFont;
+    }else{
+        self.titleLabel.font = tempFont;
+    }
 }
 
 @end
@@ -103,6 +162,8 @@
 @property (strong, nonatomic) UIView *separatorView;
 //添加一个可变字典.纪录是否第一次进入子控制器(字典中@"0"代表未进入过.字典中@"1"代表进入过)
 @property (nonatomic, strong) NSMutableDictionary *enterDataDict;
+//记录那个是选中按钮
+@property (nonatomic, strong) FQ_MineScrollerBtn * selectBtn;
 
 @end
 
@@ -131,13 +192,13 @@
     
     [self creatTitleView];
     [self creatChildView];
-//    [self creatSeparatorView];
+    //    [self creatSeparatorView];
 }
 
 -(void)setMineDelegate:(id<FQ_MineScrollerVCDelegate>)mineDelegate
 {
     _mineDelegate = mineDelegate;
-
+    
     _delegateFlags.enterChilderVc = [mineDelegate respondsToSelector:@selector(mineScrollerVC:enterChilderVc:)];
     _delegateFlags.firstEnterChilderVc = [mineDelegate respondsToSelector:@selector(mineScrollerVC:firstEnterChilderVc:)];
     _delegateFlags.noneFirstEnterChilderVc = [mineDelegate respondsToSelector:@selector(mineScrollerVC:noneFirstEnterChilderVc:)];
@@ -145,7 +206,7 @@
 
 /**
  获取是否进入子控制器的字典数据
-
+ 
  @param titleStrArr 标题数据
  */
 -(void)getEnterDataDictWithTitleArr:(NSArray *)titleStrArr{
@@ -167,7 +228,7 @@
     
     //contentsize
     CGFloat marginW = 0.0f;
-
+    
     self.titleView.contentSize = CGSizeMake(self.scrollerModel.titleContentSizeW, TitleViewH);
     //不超过屏宽的情况.重新布局titleView
     if (self.scrollerModel.titleContentSizeW < ScreenW) {
@@ -181,8 +242,8 @@
         }else{
             marginW = (ScreenW - self.scrollerModel.titleContentSizeW)/titleArr.count;
             self.titleView.frame = CGRectMake(0, IS_IPHONE_X_SERIES ? 88 : 64, ScreenW, TitleViewH);
-
-        } 
+            
+        }
     }
     
     NSMutableArray * titlesCenterX = [NSMutableArray array];
@@ -207,12 +268,15 @@
         titleBtn.selected = NO;
         titleBtn.isShowRedDot = isShowRed;
         titleBtn.frame = CGRectMake(titleBtnX, 0, titleW, titleBtnH);
-        titleBtn.titleLabel.font = [UIFont systemFontOfSize:TitleViewFontSize];
+        titleBtn.selectFont = self.scrollerModel.selTitleFont;
+        titleBtn.normalFont = self.scrollerModel.norTitleFont;
+        titleBtn.titleLabel.font = self.scrollerModel.norTitleFont;
         [titleBtn addTarget:self action:@selector(clickTitleBtn:) forControlEvents:UIControlEventTouchUpInside];
         [self.titleView addSubview:titleBtn];
         [titlesCenterX addObject:@(titleBtn.center.x / self.titleView.contentSize.width)];
         if (self.scrollerModel.selectIndex == i - 1) {
             titleBtn.selected = YES;
+            self.selectBtn = titleBtn;
         }
         titleBtnX += titleW;
     }
@@ -226,9 +290,9 @@
         if (self.scrollerModel.lineLength) {
             lineViewX = lineViewX + (selectView.frame.size.width - self.scrollerModel.lineLength) * 0.5;
             lineViewW = self.scrollerModel.lineLength;
-            self.lineView = [[UIView alloc]initWithFrame:CGRectMake(lineViewX,self.scrollerModel.lineType == BottomLineTypeDefault ? self.titleView.bounds.size.height - self.scrollerModel.lineHeight : 0, lineViewW, self.scrollerModel.lineHeight)];
+            self.lineView = [[UIView alloc]initWithFrame:CGRectMake(lineViewX,self.scrollerModel.lineType == BottomLineTypeDefault ? self.titleView.bounds.size.height - self.scrollerModel.lineHeight + self.scrollerModel.titleLineMargin : 0, lineViewW, self.scrollerModel.lineHeight)];
         }else{
-            self.lineView = [[UIView alloc]initWithFrame:CGRectMake(lineViewX, self.scrollerModel.lineType == BottomLineTypeDefault ? self.titleView.bounds.size.height - self.scrollerModel.lineHeight : 0, lineViewW, self.scrollerModel.lineHeight)];
+            self.lineView = [[UIView alloc]initWithFrame:CGRectMake(lineViewX, self.scrollerModel.lineType == BottomLineTypeDefault ? self.titleView.bounds.size.height - self.scrollerModel.lineHeight + self.scrollerModel.titleLineMargin : 0, lineViewW, self.scrollerModel.lineHeight)];
         }
         self.lineView.backgroundColor = self.scrollerModel.lineColor;
         [self.titleView addSubview:self.lineView];
@@ -244,10 +308,10 @@
         
         if (self.scrollerModel.lineLength) { //有值
             //固定线宽的
-            self.lineColorView = [[FQ_LineColorView alloc]initWithFrame:CGRectMake(0,self.titleView.bounds.size.height - 8, self.titleView.contentSize.width, self.scrollerModel.lineHeight) StartPoint:selectView.center startLength:self.scrollerModel.lineLength endPoint:nextView.center endLength:self.scrollerModel.lineLength Colors:self.scrollerModel.line_Scaling_colors locations:titlesCenterX];
+            self.lineColorView = [[FQ_LineColorView alloc]initWithFrame:CGRectMake(0,self.titleView.bounds.size.height - 8 + self.scrollerModel.titleLineMargin, self.titleView.contentSize.width, self.scrollerModel.lineHeight) StartPoint:selectView.center startLength:self.scrollerModel.lineLength endPoint:nextView.center endLength:self.scrollerModel.lineLength Colors:self.scrollerModel.line_Scaling_colors locations:titlesCenterX];
         }else{
             //随着文字大小变化的
-            self.lineColorView = [[FQ_LineColorView alloc]initWithFrame:CGRectMake(0,self.titleView.bounds.size.height - 8, self.titleView.contentSize.width, self.scrollerModel.lineHeight) StartPoint:selectView.center startLength:selectLength.floatValue endPoint:nextView.center endLength:nextLength.floatValue Colors:self.scrollerModel.line_Scaling_colors locations:titlesCenterX];
+            self.lineColorView = [[FQ_LineColorView alloc]initWithFrame:CGRectMake(0,self.titleView.bounds.size.height - 8 + self.scrollerModel.titleLineMargin, self.titleView.contentSize.width, self.scrollerModel.lineHeight) StartPoint:selectView.center startLength:selectLength.floatValue endPoint:nextView.center endLength:nextLength.floatValue Colors:self.scrollerModel.line_Scaling_colors locations:titlesCenterX];
         }
         
         [self.titleView addSubview:self.lineColorView];
@@ -304,12 +368,12 @@
     self.childsView.contentSize = CGSizeMake(childsViewW * childsViewArr.count, 0);
 }
 
-    
--(void)creatSeparatorView{
 
+-(void)creatSeparatorView{
+    
     self.separatorView= [[UIView alloc]initWithFrame:CGRectZero];
     self.separatorView.backgroundColor = RGB(220.0, 220.0, 220.0);
-    [self.view addSubview:self.separatorView];    
+    [self.view addSubview:self.separatorView];
 }
 
 #pragma mark ============ 关于标签处红点处理 ==========
@@ -364,21 +428,47 @@
     
     CGFloat offSetX = scrollView.contentOffset.x;
     if ([scrollView isEqual:self.childsView]) {
-        CGFloat offSet = offSetX / ScreenW;
-        CGFloat lineViewSet = [self changChildsViewWithIndex:offSetX / ScreenW];
+        
         NSArray * titleBtnsW = self.scrollerModel.titlesLength;
+        CGFloat offSet = offSetX / ScreenW;
+        NSInteger currentIndex = self.scrollerModel.selectIndex;
+        NSInteger nextIndex = 0;
+        if (self.scrollerModel.selectIndex <= offSet && self.scrollerModel.selectIndex < titleBtnsW.count - 1) { //则<--滑动
+            nextIndex = currentIndex + 1;
+        }else{
+            nextIndex = currentIndex - 1;
+        }
+        
+        if (offSet - self.scrollerModel.selectIndex >= 1) {
+            currentIndex = offSet;
+        }
+        if (self.scrollerModel.selectIndex - offSet >= 1) {
+            currentIndex = offSet;
+        }
+        
+        CGFloat lineViewSet = [self changChildsViewWithIndex:currentIndex];
         NSInteger selectIndex = self.scrollerModel.selectIndex;
         NSNumber * selectLength = titleBtnsW[selectIndex];
-        UIView * selectView = [self.titleView viewWithTag:(selectIndex + TitleBtnTag + 1)];
+        FQ_MineScrollerBtn * selectView = [self.titleView viewWithTag:(selectIndex + TitleBtnTag + 1)];
         
         NSNumber * nextLength;
-        UIView * nextView;
-        if (selectIndex + 1 >= titleBtnsW.count) {
+        FQ_MineScrollerBtn * nextView;
+        if (selectIndex + 1 > titleBtnsW.count) {
             nextLength = 0;
             nextView = nil;
         }else{
-            nextLength = titleBtnsW[selectIndex + 1];
-            nextView = [self.titleView viewWithTag:(selectIndex + TitleBtnTag + 2)];
+            nextLength = titleBtnsW[nextIndex];
+            nextView = [self.titleView viewWithTag:(nextIndex + TitleBtnTag + 1)];
+        }
+        
+        CGFloat progress = offSet - (int)offSet;
+
+        CGFloat titleProgress = selectIndex < nextIndex ? progress : (1-progress);
+        [selectView changeFontWithOffset:titleProgress isAdd:NO];
+        [nextView changeFontWithOffset:titleProgress isAdd:YES];
+        
+        if (progress != 0) {
+            progress = selectIndex < nextIndex ? progress : (1-progress);
         }
         
         //线是默认样式
@@ -392,14 +482,14 @@
                 CGFloat nextLineX = nextView.frame.origin.x + (nextView.frame.size.width - self.scrollerModel.lineLength) * 0.5;
                 CGFloat currentLineX = selectView.frame.origin.x + (selectView.frame.size.width - self.scrollerModel.lineLength) * 0.5;
                 
-                lineRect.origin.x = currentLineX + (nextLineX - currentLineX) * (offSet - (int)offSet);
+                lineRect.origin.x = currentLineX + (nextLineX - currentLineX) * progress;
                 lineRect.size.width = self.scrollerModel.lineLength;
                 
                 self.lineView.frame = lineRect;
             }else{
-                lineRect.origin.x = selectView.frame.origin.x + (nextView.frame.origin.x - selectView.frame.origin.x) * (offSet - (int)offSet);
+                lineRect.origin.x = selectView.frame.origin.x + (nextView.frame.origin.x - selectView.frame.origin.x) * progress;
                 
-                lineRect.size.width = selectView.frame.size.width + (nextView.frame.size.width - selectView.frame.size.width) * (offSet - (int)offSet);
+                lineRect.size.width = selectView.frame.size.width + (nextView.frame.size.width - selectView.frame.size.width) * progress;
                 self.lineView.frame = lineRect;
             }
             
@@ -407,10 +497,10 @@
             
             if (self.scrollerModel.lineLength) { //有值
                 //固定线宽的
-                [self.lineColorView setShapeLayerWithStartPoint:selectView.center startLength:self.scrollerModel.lineLength endPoint:nextView.center endLength:self.scrollerModel.lineLength andProgress:(offSet - (int)offSet)];
+                [self.lineColorView setShapeLayerWithStartPoint:selectView.center startLength:self.scrollerModel.lineLength endPoint:nextView.center endLength:self.scrollerModel.lineLength andProgress:progress];
             }else{
                 //随文字长度变化
-                [self.lineColorView setShapeLayerWithStartPoint:selectView.center startLength:selectLength.floatValue endPoint:nextView.center endLength:nextLength.floatValue andProgress:(offSet - (int)offSet)];
+                [self.lineColorView setShapeLayerWithStartPoint:selectView.center startLength:selectLength.floatValue endPoint:nextView.center endLength:nextLength.floatValue andProgress:progress];
             }
             
         }
@@ -467,10 +557,13 @@
 //滑动子控制器调用
 -(CGFloat)changChildsViewWithIndex:(NSInteger)selectIndex
 {
-    FQ_MineScrollerBtn * selectBtn = [self.titleView viewWithTag:(self.scrollerModel.selectIndex + 1 + TitleBtnTag)];
-    selectBtn.selected = NO;
+//    FQ_MineScrollerBtn * selectBtn = [self.titleView viewWithTag:(self.scrollerModel.selectIndex + 1 + TitleBtnTag)];
+//    selectBtn.selected = NO;
+    self.selectBtn.selected = NO;
+    
     FQ_MineScrollerBtn * selBtn = [self.titleView viewWithTag:(selectIndex + 1 + TitleBtnTag)];
     selBtn.selected = YES;
+    self.selectBtn = selBtn;
     self.scrollerModel.selectIndex = selectIndex;
     return selBtn.frame.origin.x;
 }
@@ -478,11 +571,13 @@
 //点击按钮调用
 -(void)changTitleViewWithIndex:(NSInteger)selectIndex
 {
-    FQ_MineScrollerBtn * selectBtn = [self.titleView viewWithTag:(self.scrollerModel.selectIndex + 1 + TitleBtnTag)];
-    selectBtn.selected = NO;
+//    FQ_MineScrollerBtn * selectBtn = [self.titleView viewWithTag:(self.scrollerModel.selectIndex + 1 + TitleBtnTag)];
+//    selectBtn.selected = NO;
+    self.selectBtn.selected = NO;
     
     FQ_MineScrollerBtn * selBtn = [self.titleView viewWithTag:(selectIndex + 1 + TitleBtnTag)];
     selBtn.selected = YES;
+    self.selectBtn = selBtn;
     self.scrollerModel.selectIndex = selectIndex;
     UIViewController*viewC = self.childViewControllers[selectIndex];
     if (_delegateFlags.enterChilderVc) {
@@ -523,7 +618,7 @@
 -(UIScrollView *)childsView
 {
     if (!_childsView) {
-
+        
         _childsView = [[FQ_ScrollView alloc]initWithFrame:CGRectMake(0, TitleViewH + (IS_IPHONE_X_SERIES ? 88 : 64),ScreenW, ScreenH - TitleViewH)];
         _childsView.bounces = NO;
         _childsView.pagingEnabled = YES;
