@@ -281,6 +281,8 @@
         titleBtnX += titleW;
     }
     
+    //判断当前类型是否为图片样式
+    
     if (self.scrollerModel.lineType == BottomLineTypeDefault || self.scrollerModel.lineType == BottomLineTypeDefault_Up) {
         
         UIView * selectView = [self.titleView viewWithTag:(self.scrollerModel.selectIndex + TitleBtnTag + 1)];
@@ -316,6 +318,15 @@
         
         [self.titleView addSubview:self.lineColorView];
         
+    }else if (self.scrollerModel.lineType == BottomLineTypeBackColor){
+        
+        self.lineView = [[UIView alloc]init];;
+        self.lineView.backgroundColor = self.scrollerModel.lineColor;
+        self.lineView.layer.cornerRadius = self.scrollerModel.lineHeight * 0.5;
+        CGFloat x = self.selectBtn.frame.origin.x + (self.selectBtn.bounds.size.width - self.scrollerModel.lineLength) * 0.5;
+        CGFloat y = (self.selectBtn.bounds.size.height - self.scrollerModel.lineHeight) * 0.5;
+        self.lineView.frame = CGRectMake(x, y, self.scrollerModel.lineLength, self.scrollerModel.lineHeight);
+        [self.titleView insertSubview:self.lineView atIndex:0];
     }
 }
 
@@ -503,7 +514,26 @@
                 [self.lineColorView setShapeLayerWithStartPoint:selectView.center startLength:selectLength.floatValue endPoint:nextView.center endLength:nextLength.floatValue andProgress:progress];
             }
             
+        }else if(self.scrollerModel.lineType == BottomLineTypeBackColor){
+            
+            CGRect lineRect = self.lineView.frame;
+            if (self.scrollerModel.lineLength) {
+                
+                CGFloat nextLineX = nextView.frame.origin.x + (nextView.frame.size.width - self.scrollerModel.lineLength) * 0.5;
+                CGFloat currentLineX = selectView.frame.origin.x + (selectView.frame.size.width - self.scrollerModel.lineLength) * 0.5;
+                
+                lineRect.origin.x = currentLineX + (nextLineX - currentLineX) * progress;
+                lineRect.size.width = self.scrollerModel.lineLength;
+                
+                self.lineView.frame = lineRect;
+            }else{
+                lineRect.origin.x = selectView.frame.origin.x + (nextView.frame.origin.x - selectView.frame.origin.x) * progress;
+                
+                lineRect.size.width = selectView.frame.size.width + (nextView.frame.size.width - selectView.frame.size.width) * progress;
+                self.lineView.frame = lineRect;
+            }
         }
+        
         CGFloat centerX = lineViewSet + selectView.frame.size.width * 0.5;
         if (centerX - ScreenW * 0.5 <= 0 ) {
             [self.titleView setContentOffset:CGPointZero animated:YES];

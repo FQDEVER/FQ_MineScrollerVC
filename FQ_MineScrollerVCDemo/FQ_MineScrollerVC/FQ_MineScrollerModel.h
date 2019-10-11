@@ -40,6 +40,7 @@ typedef enum : NSInteger{
     BottomLineTypeDefault = 0, //默认-bottom
     BottomLineTypeScaling, //拉伸
     BottomLineTypeDefault_Up, //在顶部
+    BottomLineTypeBackColor, //选中样式为背景色块
 }BottomLineType;
 
 typedef enum : NSInteger{

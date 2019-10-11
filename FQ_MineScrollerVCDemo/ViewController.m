@@ -34,24 +34,25 @@
     scrollerModel.selectIndex = 0;
     scrollerModel.titlesArr = @[@"强度",@"最大",@"乳酸"];
     scrollerModel.childVCArr = @[dynamicVc,fansVc,focusVc];
-    scrollerModel.lineType = BottomLineTypeScaling;
-    scrollerModel.lineLength  = 40;
-    scrollerModel.lineHeight  = 15;
+    scrollerModel.lineType = BottomLineTypeDefault;
+    scrollerModel.lineLength  = 75;
+    scrollerModel.lineHeight  = 5;
     scrollerModel.titleLineMargin = 6;
     scrollerModel.titleMargin = 35;
-    scrollerModel.titleViewType = TitleViewStatusType_Full_Left;
+    scrollerModel.titleViewType = TitleViewStatusType_None;
     scrollerModel.selectColor = [UIColor blackColor];
     scrollerModel.defaultColor = [UIColor grayColor];
+    scrollerModel.lineColor = UIColor.orangeColor;
     scrollerModel.selTitleFont = [UIFont boldSystemFontOfSize:25];
     scrollerModel.norTitleFont = [UIFont boldSystemFontOfSize:15];
     scrollerModel.line_Scaling_colors = @[RGB(55.0, 201.0, 105.0),RGB(40, 168, 152)];
     self.scrollerModel = scrollerModel;
     
     //重新布局childview
-    self.childsView.frame = CGRectMake(0, 64 + 54, ScreenW , ScreenH - 64 - 54);
+    self.childsView.frame = CGRectMake(0, 64 + 30, ScreenW , ScreenH - 64 - 30);
     self.childsView.contentSize = CGSizeMake(scrollerModel.titlesArr.count * ScreenW, 0);
     //重新布局titleView
-    self.titleView.frame = CGRectMake(10, 64, ScreenW - 20, 54);
+    self.titleView.frame = CGRectMake(10, 44, ScreenW - 20, 50);
     self.titleView.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:self.titleView];
     
