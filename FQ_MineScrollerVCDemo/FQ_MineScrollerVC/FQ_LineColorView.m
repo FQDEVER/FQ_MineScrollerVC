@@ -70,7 +70,7 @@
     
     CAShapeLayer * lineLayer = [CAShapeLayer layer];
     lineLayer.frame = CGRectMake(0,0, M_ScreenW, M_ScreenH);
-    lineLayer.lineWidth = 10.0f;
+    lineLayer.lineWidth = 6.0f;
     lineLayer.path = path.CGPath;
     lineLayer.lineCap = kCALineCapRound;
     self.lineLayer = lineLayer;
@@ -98,7 +98,7 @@
     if (!isChangBig) {
         lineMargin = startPoint.x - endPoint.x - startLength * 0.5 - endLength * 0.5;
     }
-    NSLog(@"-------------->lineMargin %f -----progress %f",lineMargin,progress);
+
     if (isChangBig) {
         if (progress < 0.5) {
             [self.path moveToPoint:CGPointMake(startPoint.x - startLength * 0.5, M_ScreenH * 0.5)];

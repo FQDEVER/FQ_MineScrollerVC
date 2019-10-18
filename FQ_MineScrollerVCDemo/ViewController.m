@@ -24,35 +24,35 @@
 -(void)creatUI{
     
     FQ_MineScrollerModel * scrollerModel = [[FQ_MineScrollerModel alloc]initWithTitleMargin:40];
-    UIViewController * dynamicVc = [[UIViewController alloc]init];
-    dynamicVc.view.backgroundColor = [UIColor redColor];
+//    UIViewController * dynamicVc = [[UIViewController alloc]init];
+//    dynamicVc.view.backgroundColor = [UIColor redColor];
     UIViewController * fansVc = [[UIViewController alloc]init];
     fansVc.view.backgroundColor = [UIColor greenColor];
     UIViewController * focusVc = [[UIViewController alloc]init];
     focusVc.view.backgroundColor = [UIColor orangeColor];
     
     scrollerModel.selectIndex = 0;
-    scrollerModel.titlesArr = @[@"强度",@"最大",@"乳酸"];
-    scrollerModel.childVCArr = @[dynamicVc,fansVc,focusVc];
-    scrollerModel.lineType = BottomLineTypeDefault;
-    scrollerModel.lineLength  = 75;
-    scrollerModel.lineHeight  = 5;
-    scrollerModel.titleLineMargin = 6;
-    scrollerModel.titleMargin = 35;
-    scrollerModel.titleViewType = TitleViewStatusType_None;
+    scrollerModel.lineType = BottomLineTypeScaling;
+    scrollerModel.lineHeight  = 15;
+    scrollerModel.titleLineMargin = 0;
+    scrollerModel.titleMargin = 100;
+    scrollerModel.titleViewType = TitleViewStatusType_Full_Center;
     scrollerModel.selectColor = [UIColor blackColor];
     scrollerModel.defaultColor = [UIColor grayColor];
     scrollerModel.lineColor = UIColor.orangeColor;
     scrollerModel.selTitleFont = [UIFont boldSystemFontOfSize:25];
     scrollerModel.norTitleFont = [UIFont boldSystemFontOfSize:15];
     scrollerModel.line_Scaling_colors = @[RGB(55.0, 201.0, 105.0),RGB(40, 168, 152)];
+    
+    scrollerModel.titlesArr = @[@"消息中心",@"报警提醒"];
+    scrollerModel.childVCArr = @[fansVc,focusVc];//dynamicVc
     self.scrollerModel = scrollerModel;
     
     //重新布局childview
     self.childsView.frame = CGRectMake(0, 64 + 30, ScreenW , ScreenH - 64 - 30);
     self.childsView.contentSize = CGSizeMake(scrollerModel.titlesArr.count * ScreenW, 0);
     //重新布局titleView
-    self.titleView.frame = CGRectMake(10, 44, ScreenW - 20, 50);
+    self.titleView.frame = CGRectMake(0, 44, ScreenW, 50);
     self.titleView.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:self.titleView];
     

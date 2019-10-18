@@ -42,19 +42,29 @@
 -(void)setTitlesArr:(NSArray *)titlesArr
 {
     _titlesArr = titlesArr;
-    
+    [self getTitleContentSizeW];
+}
+
+-(void)setTitleMargin:(CGFloat)titleMargin
+{
+    _titleMargin = titleMargin;
+    [self getTitleContentSizeW];
+}
+
+-(void)getTitleContentSizeW{
+    if (self.titlesArr.count == 0) {
+        return;
+    }
     NSMutableArray * titlesLength = [NSMutableArray array];
-    
     //按钮宽度的计算方式
     NSInteger titleSizeW = 0;
-    for (NSString * title in titlesArr) { //44就是顶部的高度
+    for (NSString * title in self.titlesArr) { //44就是顶部的高度
         CGFloat titleW = [title boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, TitleViewH) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName : [UIFont systemFontOfSize:TitleViewFontSize]} context:nil].size.width;
         [titlesLength addObject:@(titleW)];
         titleSizeW += (titleW + self.titleMargin);
     }
     self.titlesLength = titlesLength.copy;//这个是文字宽度
     self.titleContentSizeW = titleSizeW; //这个是按钮宽度
-    
 }
 
 -(UIColor *)lineColor
