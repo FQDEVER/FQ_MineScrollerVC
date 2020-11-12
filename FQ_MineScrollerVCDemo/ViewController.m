@@ -24,8 +24,8 @@
 -(void)creatUI{
     
     FQ_MineScrollerModel * scrollerModel = [[FQ_MineScrollerModel alloc]initWithTitleMargin:40];
-//    UIViewController * dynamicVc = [[UIViewController alloc]init];
-//    dynamicVc.view.backgroundColor = [UIColor redColor];
+    UIViewController * dynamicVc = [[UIViewController alloc]init];
+    dynamicVc.view.backgroundColor = [UIColor redColor];
     UIViewController * fansVc = [[UIViewController alloc]init];
     fansVc.view.backgroundColor = [UIColor greenColor];
     UIViewController * focusVc = [[UIViewController alloc]init];
@@ -44,8 +44,8 @@
     scrollerModel.norTitleFont = [UIFont boldSystemFontOfSize:15];
     scrollerModel.line_Scaling_colors = @[RGB(55.0, 201.0, 105.0),RGB(40, 168, 152)];
     
-    scrollerModel.titlesArr = @[@"消息中心",@"报警提醒"];
-    scrollerModel.childVCArr = @[fansVc,focusVc];//dynamicVc
+    scrollerModel.titlesArr = @[@"消息中心",@"报警提醒",@"动态",@"消息中心",@"报警提醒",@"动态"];
+    scrollerModel.childVCArr = @[fansVc,focusVc,dynamicVc,fansVc,focusVc,dynamicVc];
     self.scrollerModel = scrollerModel;
     
     //重新布局childview
